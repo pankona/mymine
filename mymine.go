@@ -31,7 +31,7 @@ func main() {
 	}
 
 	request := redmineUrl + "issues.json?key=" + redmineApiKey + "&status_id=open&assigned_to_id=me&limit=100"
-	fmt.Println("request = ", request)
+	fmt.Println("request =", request)
 	var buf map[string]interface{}
 	rest.Get(&buf, request, nil)
 
