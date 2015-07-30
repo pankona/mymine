@@ -30,6 +30,14 @@ func main() {
 		return
 	}
 
+	fmt.Println(redmineUrl + "issues.json?key=" + redmineApiKey + "&status_id=open&assigned_to_id=me")
 	var buf map[string]interface{}
 	rest.Get(&buf, redmineUrl+"issues.json?key="+redmineApiKey+"&status_id=open&assigned_to_id=me", nil)
+	//fmt.Println(buf["issues"])
+
+	issues := buf["issues"].([]interface{})
+	for _, v := range issues {
+		issue := v.(map[string]interface{})
+		fmt.Println(issue["id"], issue["subject"])
+	}
 }
