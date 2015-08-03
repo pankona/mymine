@@ -38,6 +38,9 @@ func main() {
 	issues := buf["issues"].([]interface{})
 	for _, v := range issues {
 		issue := v.(map[string]interface{})
-		fmt.Println(issue["id"], issue["subject"])
+
+		id := int(issue["id"].(float64))
+		status := issue["status"].(map[string]interface{})
+		fmt.Printf("[#%d] %11s %s\n", id, status["name"], issue["subject"])
 	}
 }
