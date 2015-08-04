@@ -2,8 +2,12 @@ package main
 
 import (
 	"fmt"
+	flags "github.com/jessevdk/go-flags"
 	"menteslibres.net/gosexy/rest"
 	"os"
+	"os/exec"
+	"runtime"
+	"strconv"
 	"strings"
 )
 
@@ -17,11 +21,48 @@ func getEnvVar(varName string) (result string) {
 	return ""
 }
 
+func openUrlByBrowser(url string) (result int) {
+	result = 0
+	switch runtime.GOOS {
+	case "linux":
+		exec.Command("xdg-open", url).Start()
+	case "windows":
+		exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+	case "darwin":
+		exec.Command("open", url).Start()
+	default:
+		fmt.Println("Your PC is not supported.")
+	}
+
+	return result
+}
+
+type Options struct {
+	Open []int `short:"o" long:"open" description:"Open specified ticket on a web browser"`
+}
+
 func main() {
+	var opts Options
+	parser := flags.NewParser(&opts, flags.Default)
+
+	parser.Name = "mymine"
+	parser.Usage = "[OPTIONS]"
+
+	_, err := parser.Parse()
+	if err != nil {
+		os.Exit(0)
+	}
+
 	redmineUrl := getEnvVar("REDMINE_URL")
 	if redmineUrl == "" {
 		fmt.Println("REDMINE_URL is not specified.")
 		return
+	}
+
+	if opts.Open != nil {
+		url := redmineUrl + "issues/" + strconv.Itoa(opts.Open[0])
+		openUrlByBrowser(url)
+		os.Exit(0)
 	}
 
 	redmineApiKey := getEnvVar("REDMINE_API_KEY")
@@ -32,6 +73,7 @@ func main() {
 
 	request := redmineUrl + "issues.json?key=" + redmineApiKey + "&status_id=open&assigned_to_id=me&limit=100"
 	fmt.Println("request =", request)
+	fmt.Println("fetching information...")
 	var buf map[string]interface{}
 	rest.Get(&buf, request, nil)
 
