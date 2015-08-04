@@ -16,9 +16,13 @@
   * REDMINE_API_KEY
     * redmine の REST API を利用するための API KEY
 
-  * 以下のコマンドを実行します。
+  * 以下のコマンドを実行すると、自分担当のチケット一覧が表示されます。
 
     * `$ mymine`
+
+  * `-o {ticket num}` のオプションをつけると、指定されたチケットをブラウザで開きます。
+
+    * `$ mymine -o 12345`
 
 # License
 
