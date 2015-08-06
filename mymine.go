@@ -11,6 +11,10 @@ import (
 	"strings"
 )
 
+const (
+	version string = "1.0"
+)
+
 func getEnvVar(varName string) (result string) {
 	for _, e := range os.Environ() {
 		pair := strings.Split(e, "=")
@@ -37,8 +41,13 @@ func openUrlByBrowser(url string) (result int) {
 	return result
 }
 
+func showVersion() {
+	fmt.Println("mymine version", version)
+}
+
 type Options struct {
-	Open []int `short:"o" long:"open" description:"Open specified ticket on a web browser"`
+	Open    []int  `short:"o" long:"open"    description:"Open specified ticket on a web browser"`
+	Version []bool `short:"v" long:"version" description:"Show version"`
 }
 
 func main() {
@@ -53,10 +62,15 @@ func main() {
 		os.Exit(0)
 	}
 
+	if opts.Version != nil {
+		showVersion()
+		os.Exit(0)
+	}
+
 	redmineUrl := getEnvVar("REDMINE_URL")
 	if redmineUrl == "" {
 		fmt.Println("REDMINE_URL is not specified.")
-		return
+		os.Exit(0)
 	}
 
 	if opts.Open != nil {
@@ -68,7 +82,7 @@ func main() {
 	redmineApiKey := getEnvVar("REDMINE_API_KEY")
 	if redmineApiKey == "" {
 		fmt.Println("REDMINE_API_KEY is not specified.")
-		return
+		os.Exit(0)
 	}
 
 	request := redmineUrl + "issues.json?key=" + redmineApiKey + "&status_id=open&assigned_to_id=me&limit=100"
