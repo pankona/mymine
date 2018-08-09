@@ -46,7 +46,7 @@ func openURLByBrowser(url string) error {
 		return errors.New("could not determine how to open URL by browser in this platform")
 	}
 	args := append(cmd.args, url)
-	return exec.Command(cmd.cmd, args...).Start()
+	return exec.Command(cmd.cmd, args...).Start() // #nosec
 }
 
 func showVersion() {
@@ -84,8 +84,8 @@ func main() {
 
 	if opts.open != nil {
 		url := redmineURL + "issues/" + strconv.Itoa(opts.open[0])
-		if err := openURLByBrowser(url); err != nil {
-			fmt.Println("failed to open URL by browser: %s", err.Error())
+		if err = openURLByBrowser(url); err != nil {
+			fmt.Printf("failed to open URL by browser: %s\n", err.Error())
 			os.Exit(1)
 		}
 	}
@@ -101,7 +101,11 @@ func main() {
 	fmt.Println("fetching information...")
 
 	var buf map[string]interface{}
-	rest.Get(&buf, request, nil)
+	err = rest.Get(&buf, request, nil)
+	if err != nil {
+		fmt.Printf("failed to fetch information: %s\n", err.Error())
+		os.Exit(1)
+	}
 
 	issues := buf["issues"].([]interface{})
 	for _, v := range issues {
