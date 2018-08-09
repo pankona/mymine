@@ -1,16 +1,18 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
-	"os/exec"
-	"runtime"
 	"strconv"
 	"strings"
 
+	"runtime"
+
+	"os/exec"
+
 	"github.com/jessevdk/go-flags"
 	"menteslibres.net/gosexy/rest"
-	"github.com/pkg/errors"
 )
 
 const (
@@ -27,20 +29,23 @@ func lookupEnv(key string) string {
 	return ""
 }
 
-func openURLByBrowser(url string) error {
-	var err error
-	switch runtime.GOOS {
-	case "linux":
-		err = exec.Command("xdg-open", url).Start()
-	case "windows":
-		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
-	case "darwin":
-		err = exec.Command("open", url).Start()
-	default:
-		err = errors.New("cannot open browser")
-	}
+type openCmd struct {
+	cmd  string
+	args []string
+}
 
-	return err
+var m = map[string]openCmd{
+	"linux":   {cmd: "xdg-open"},
+	"windows": {cmd: "rundll32", args: "url.dll,FileProtocolHandler"},
+	"darwin":  {cmd: "open"},
+}
+
+func openURLByBrowser(url string) error {
+	cmd, ok := m[runtime.GOOS]
+	if !ok {
+		return errors.New("could not determine how to open URL by browser in this platform")
+	}
+	return exec.Command(cmd.cmd, cmd.args...).Start()
 }
 
 func showVersion() {
@@ -61,7 +66,7 @@ func main() {
 
 	_, err := parser.Parse()
 	if err != nil {
-		fmt.Println("failed to parse command line argument. exit.")
+		fmt.Println("failed to parse cmd line argument. exit.")
 		os.Exit(1)
 	}
 
