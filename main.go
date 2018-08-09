@@ -105,7 +105,9 @@ func main() {
 		fmt.Printf("failed to fetch information: %s\n", err.Error())
 		os.Exit(1)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close() // #nosec
+	}()
 
 	content, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -114,7 +116,7 @@ func main() {
 	}
 
 	var buf map[string]interface{}
-	err = json.Unmarshal(content, buf)
+	err = json.Unmarshal(content, &buf)
 	if err != nil {
 		fmt.Printf("failed to unmarshal response body: %s", err.Error())
 		os.Exit(1)

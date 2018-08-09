@@ -1,5 +1,5 @@
 
-all:
+all: lint test
 	go build
 
 lint:
