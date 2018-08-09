@@ -27,7 +27,7 @@ func lookupEnv(key string) string {
 	return ""
 }
 
-func openUrlByBrowser(url string) error {
+func openURLByBrowser(url string) error {
 	var err error
 	switch runtime.GOOS {
 	case "linux":
@@ -61,33 +61,33 @@ func main() {
 
 	_, err := parser.Parse()
 	if err != nil {
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	if opts.Version != nil {
 		showVersion()
-		os.Exit(0)
+		os.Exit(1)
 	}
 
-	redmineUrl := lookupEnv("REDMINE_URL")
-	if redmineUrl == "" {
+	redmineURL := lookupEnv("REDMINE_URL")
+	if redmineURL == "" {
 		fmt.Println("REDMINE_URL is not specified.")
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	if opts.Open != nil {
-		url := redmineUrl + "issues/" + strconv.Itoa(opts.Open[0])
-		openUrlByBrowser(url)
-		os.Exit(0)
+		url := redmineURL + "issues/" + strconv.Itoa(opts.Open[0])
+		openURLByBrowser(url)
+		os.Exit(1)
 	}
 
 	redmineApiKey := lookupEnv("REDMINE_API_KEY")
 	if redmineApiKey == "" {
 		fmt.Println("REDMINE_API_KEY is not specified.")
-		os.Exit(0)
+		os.Exit(1)
 	}
 
-	request := redmineUrl + "issues.json?key=" + redmineApiKey + "&status_id=open&assigned_to_id=me&limit=100"
+	request := redmineURL + "issues.json?key=" + redmineApiKey + "&status_id=open&assigned_to_id=me&limit=100"
 	fmt.Println("request =", request)
 	fmt.Println("fetching information...")
 	var buf map[string]interface{}
