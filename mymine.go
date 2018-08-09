@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	flags "github.com/jessevdk/go-flags"
-	"menteslibres.net/gosexy/rest"
 	"os"
 	"os/exec"
 	"runtime"
 	"strconv"
 	"strings"
+
+	flags "github.com/jessevdk/go-flags"
+	"menteslibres.net/gosexy/rest"
 )
 
 const (
