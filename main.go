@@ -88,6 +88,7 @@ func main() {
 			fmt.Printf("failed to open URL by browser: %s\n", err.Error())
 			os.Exit(1)
 		}
+		os.Exit(0)
 	}
 
 	redmineAPIKey := lookupEnv("REDMINE_API_KEY")
