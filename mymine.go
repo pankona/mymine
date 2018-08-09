@@ -81,13 +81,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	redmineApiKey := lookupEnv("REDMINE_API_KEY")
-	if redmineApiKey == "" {
+	redmineAPIKey := lookupEnv("REDMINE_API_KEY")
+	if redmineAPIKey == "" {
 		fmt.Println("REDMINE_API_KEY is not specified.")
 		os.Exit(1)
 	}
 
-	request := redmineURL + "issues.json?key=" + redmineApiKey + "&status_id=open&assigned_to_id=me&limit=100"
+	request := redmineURL + "issues.json?key=" + redmineAPIKey + "&status_id=open&assigned_to_id=me&limit=100"
 	fmt.Println("request =", request)
 	fmt.Println("fetching information...")
 	var buf map[string]interface{}
