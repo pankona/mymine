@@ -45,7 +45,8 @@ func openURLByBrowser(url string) error {
 	if !ok {
 		return errors.New("could not determine how to open URL by browser in this platform")
 	}
-	return exec.Command(cmd.cmd, cmd.args...).Start()
+	args := append(cmd.args, url)
+	return exec.Command(cmd.cmd, args...).Start()
 }
 
 func showVersion() {
