@@ -1,18 +1,18 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os"
+	"os/exec"
+	"runtime"
 	"strconv"
 	"strings"
 
-	"runtime"
-
-	"os/exec"
-
 	"github.com/jessevdk/go-flags"
-	"menteslibres.net/gosexy/rest"
 )
 
 const (
@@ -100,10 +100,23 @@ func main() {
 	fmt.Println("request =", request)
 	fmt.Println("fetching information...")
 
-	var buf map[string]interface{}
-	err = rest.Get(&buf, request, nil)
+	resp, err := http.Get(request)
 	if err != nil {
 		fmt.Printf("failed to fetch information: %s\n", err.Error())
+		os.Exit(1)
+	}
+	defer resp.Body.Close()
+
+	content, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("failed to read response body: %s", err.Error())
+		os.Exit(1)
+	}
+
+	var buf map[string]interface{}
+	err = json.Unmarshal(content, buf)
+	if err != nil {
+		fmt.Printf("failed to unmarshal response body: %s", err.Error())
 		os.Exit(1)
 	}
 
