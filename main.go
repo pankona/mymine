@@ -76,9 +76,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	redmineURL := lookupEnv("REDMINE_URL")
+	redmineURL := lookupEnv("MYMINE_REDMINE_URL")
 	if redmineURL == "" {
-		fmt.Println("REDMINE_URL is not specified. exit.")
+		fmt.Println("MYMINE_REDMINE_URL is not specified. exit.")
 		os.Exit(1)
 	}
 
@@ -91,9 +91,9 @@ func main() {
 		os.Exit(0)
 	}
 
-	redmineAPIKey := lookupEnv("REDMINE_API_KEY")
+	redmineAPIKey := lookupEnv("MYMINE_REDMINE_API_KEY")
 	if redmineAPIKey == "" {
-		fmt.Println("REDMINE_API_KEY is not specified. exit.")
+		fmt.Println("MYMINE_REDMINE_API_KEY is not specified. exit.")
 		os.Exit(1)
 	}
 

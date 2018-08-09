@@ -12,10 +12,10 @@
 
 以下の環境変数を設定します。
 
-* REDMINE_URL
+* MYMINE_REDMINE_URL
   * Redmine へのURL
 
-* REDMINE_API_KEY
+* MYMINE_REDMINE_API_KEY
   * Redmine の REST API を利用するための API KEY
 
 * 以下のコマンドを実行すると、自分担当のチケット一覧が表示されます。
