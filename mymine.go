@@ -36,7 +36,7 @@ type openCmd struct {
 
 var m = map[string]openCmd{
 	"linux":   {cmd: "xdg-open"},
-	"windows": {cmd: "rundll32", args: "url.dll,FileProtocolHandler"},
+	"windows": {cmd: "rundll32", args: []string{"url.dll,FileProtocolHandler"}},
 	"darwin":  {cmd: "open"},
 }
 
@@ -53,13 +53,13 @@ func showVersion() {
 	fmt.Println("mymine version", version)
 }
 
-type Options struct {
-	Open    []int  `short:"o" long:"open"    description:"Open specified ticket on a web browser"`
-	Version []bool `short:"v" long:"version" description:"Show version"`
+type options struct {
+	open    []int  `short:"o" long:"open"    description:"Open specified ticket on a web browser"`
+	version []bool `short:"v" long:"version" description:"Show version"`
 }
 
 func main() {
-	var opts Options
+	var opts options
 	parser := flags.NewParser(&opts, flags.Default)
 
 	parser.Name = "mymine"
@@ -71,7 +71,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if opts.Version != nil {
+	if opts.version != nil {
 		showVersion()
 		os.Exit(1)
 	}
@@ -82,8 +82,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	if opts.Open != nil {
-		url := redmineURL + "issues/" + strconv.Itoa(opts.Open[0])
+	if opts.open != nil {
+		url := redmineURL + "issues/" + strconv.Itoa(opts.open[0])
 		if err := openURLByBrowser(url); err != nil {
 			fmt.Println("failed to open URL by browser: %s", err.Error())
 			os.Exit(1)
