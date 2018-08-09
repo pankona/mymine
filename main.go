@@ -98,10 +98,19 @@ func main() {
 	}
 
 	request := redmineURL + "issues.json?key=" + redmineAPIKey + "&status_id=open&assigned_to_id=me&limit=100"
-	fmt.Println("request =", request)
-	fmt.Println("fetching information...")
+	fmt.Printf("request = %s\nfetching information...", request)
 
-	resp, err := http.Get(request)
+	content, err := fetchContent(request)
+	if err != nil {
+		fmt.Printf("failed to fetch content: %s", err.Error())
+		os.Exit(1)
+	}
+
+	showContent(content)
+}
+
+func fetchContent(url string) (map[string]interface{}, error) {
+	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Printf("failed to fetch information: %s\n", err.Error())
 		os.Exit(1)
@@ -112,21 +121,21 @@ func main() {
 
 	content, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Printf("failed to read response body: %s", err.Error())
-		os.Exit(1)
+		return nil, fmt.Errorf("failed to read response body: %s", err.Error())
 	}
 
 	var buf map[string]interface{}
 	err = json.Unmarshal(content, &buf)
 	if err != nil {
-		fmt.Printf("failed to unmarshal response body: %s", err.Error())
-		os.Exit(1)
+		return nil, fmt.Errorf("failed to unmarshal response body: %s", err.Error())
 	}
+	return buf, nil
+}
 
-	issues := buf["issues"].([]interface{})
+func showContent(m map[string]interface{}) {
+	issues := m["issues"].([]interface{})
 	for _, v := range issues {
 		issue := v.(map[string]interface{})
-
 		id := int(issue["id"].(float64))
 		status := issue["status"].(map[string]interface{})
 		fmt.Printf("[#%d] %11s %s\n", id, status["name"], issue["subject"])
