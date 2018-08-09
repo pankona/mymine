@@ -27,7 +27,7 @@ $ mymine
 * `-o {ticket num}` のオプションをつけると、指定されたチケットをブラウザで開きます。
 
 ```bash
-$ mymine -o 12345`
+$ mymine -o 12345
 ```
 
 ## License
