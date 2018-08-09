@@ -13,14 +13,14 @@ import (
 )
 
 const (
-	version string = "1.0"
+	version = "1.0"
 )
 
-func getEnvVar(varName string) (result string) {
-	for _, e := range os.Environ() {
-		pair := strings.Split(e, "=")
-		if pair[0] == varName {
-			return pair[1]
+func lookupEnv(key string) string {
+	for _, v := range os.Environ() {
+		kv := strings.Split(v, "=")
+		if kv[0] == key {
+			return kv[1]
 		}
 	}
 	return ""
@@ -68,7 +68,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	redmineUrl := getEnvVar("REDMINE_URL")
+	redmineUrl := lookupEnv("REDMINE_URL")
 	if redmineUrl == "" {
 		fmt.Println("REDMINE_URL is not specified.")
 		os.Exit(0)
@@ -80,7 +80,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	redmineApiKey := getEnvVar("REDMINE_API_KEY")
+	redmineApiKey := lookupEnv("REDMINE_API_KEY")
 	if redmineApiKey == "" {
 		fmt.Println("REDMINE_API_KEY is not specified.")
 		os.Exit(0)
