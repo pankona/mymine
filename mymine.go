@@ -8,8 +8,9 @@ import (
 	"strconv"
 	"strings"
 
-	flags "github.com/jessevdk/go-flags"
+	"github.com/jessevdk/go-flags"
 	"menteslibres.net/gosexy/rest"
+	"github.com/pkg/errors"
 )
 
 const (
@@ -26,20 +27,20 @@ func lookupEnv(key string) string {
 	return ""
 }
 
-func openUrlByBrowser(url string) (result int) {
-	result = 0
+func openUrlByBrowser(url string) error {
+	var err error
 	switch runtime.GOOS {
 	case "linux":
-		exec.Command("xdg-open", url).Start()
+		err = exec.Command("xdg-open", url).Start()
 	case "windows":
-		exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
 	case "darwin":
-		exec.Command("open", url).Start()
+		err = exec.Command("open", url).Start()
 	default:
-		fmt.Println("Your PC is not supported.")
+		err = errors.New("cannot open browser")
 	}
 
-	return result
+	return err
 }
 
 func showVersion() {
