@@ -3,7 +3,7 @@ all: lint test
 	go build
 
 lint:
-	gometalinter.v2 --vendor ./...
+	golangci-lint run --deadline 300s
 
 test:
 	go test ./...
